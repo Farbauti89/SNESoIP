@@ -1,3 +1,3 @@
 # ASCII table converter #
 
-This ROM displays incoming ASCII values (2nd controller port).
+This ROM displays incoming ASCII characters (2nd controller port).
