@@ -1,1 +1,11 @@
-../../config
+#Please adjust SNES_SDK and uncomment the following line.
+#export SNES_SDK := /path/to/sndk
+export EMULATOR := $(SNES_SDK)/bin/snes9x -conf $(SNES_SDK)/bin/snes9x.conf
+
+
+# Do not change anything beneath this line.
+ifeq ($(strip $(SNES_SDK)),)
+$(error "Please edit the config file in the SDK root directory.")
+endif
+
+include $(SNES_SDK)/Makefile.include
