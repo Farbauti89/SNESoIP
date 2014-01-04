@@ -48,7 +48,7 @@ int main(void) {
 		if (data & BIT(10)) charIndex = charIndex + 32;
 		if (data & BIT(9))  charIndex = charIndex + 64;
 		if (data & BIT(8))  charIndex = charIndex + 128;
-		if (charIndex > 169) charIndex = 169;
+		if (charIndex > 169) charIndex = 0;
 
 		currentChar[0] = asciiTable[charIndex];
 		currentChar[1] = '\0';
