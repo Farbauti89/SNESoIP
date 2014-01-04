@@ -36,7 +36,7 @@ int main(void) {
 
 	while(1) {
 		scanPads();
-		data = padsCurrent(1);
+		data = padsCurrent(0);
 
 
 		charIndex = 0;
@@ -53,12 +53,12 @@ int main(void) {
 		currentChar[0] = asciiTable[charIndex];
 		currentChar[1] = '\0';
 		if (currentChar[0] == 10) { x = 0; y = y + 2; }
-		if (currentChar[0] != 0) { consoleDrawText(x, y, currentChar); x++; }
+		if (currentChar[0] != 0) {
+			consoleDrawText(x, y, currentChar);
+			WaitForVBlank(); x++;
+		}
 		if (x > 31) { y = y + 1; x = 0; }
 		if (y > 26) { y = 0; clear(); }
-
-
-		WaitForVBlank();
 	}
 
 
