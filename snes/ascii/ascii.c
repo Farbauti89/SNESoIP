@@ -70,6 +70,8 @@ int main(void) {
 void clear() {
 	int x = 0, y = 0;
 
+	for (snes_vblank_count = 0; snes_vblank_count < 100; WaitForVBlank());
+
 	setFadeEffect(FADE_OUT);
 	for (y = 0; y <= 26; y++)
 		for (x = 0; x <= 31; x++)
