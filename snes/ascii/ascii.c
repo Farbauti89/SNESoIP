@@ -36,7 +36,7 @@ int main(void) {
 
 	while(1) {
 		scanPads();
-		data = padsCurrent(0);
+		data = padsCurrent(1);
 
 
 		charIndex = 0;
