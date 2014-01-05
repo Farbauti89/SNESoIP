@@ -1,5 +1,5 @@
-/* server.h -*-c-*-
- * SNESoIP server.
+/* mysql.h -*-c-*-
+ * MySQL database handler.
  * Author: Michael Fitzmayer
  *
  * This program is part of the SNESoIP project and has has been released
@@ -7,21 +7,20 @@
  * details. */
 
 
-#ifndef SERVER_h
-#define SERVER_h
+#ifndef MYSQL_h
+#define MYSQL_h
 
-
-#include <netinet/in.h>
-#include <errno.h>
-#include <getopt.h>
+#include <mysql.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include "config.h"
-#include "protocol.h"
-#include "mysql.h"
 
 
-char* uint16_t2bin(uint16_t num);
+MYSQL *dbCon;
+
+
+int  initMySQL();
+void finiMySQL();
 
 
 #endif

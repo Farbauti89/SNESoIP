@@ -11,6 +11,7 @@
 
 
 int initConfig(char *filename) {
+	int error = 0;
 	config_t cfg;
 	config_setting_t *setting;
 
@@ -20,34 +21,45 @@ int initConfig(char *filename) {
 
 	if (! config_read_file(&cfg, filename)) {
 		config_destroy(&cfg);
-		return ErrorIO;
+		fprintf(stderr, "%s: wrong file format or file does not exist.\n", filename);
+		error = 1;
+	}
+
+	if (
+		(! config_lookup_string(&cfg, "hostname", &dbHostname)) ||
+		(strlen(dbHostname) == 0)) {
+
+		fprintf(stderr, "%s: hostname is not set\n", filename);
+		error = 1;
+	}
+
+	if (
+		(! config_lookup_string(&cfg, "username", &dbUsername)) ||
+		(strlen(dbUsername) == 0)) {
+
+
+		fprintf(stderr, "%s: username is not set\n", filename);
+		error = 1;
+	}
+
+	if (
+		(! config_lookup_string(&cfg, "password", &dbPassword)) ||
+		(strlen(dbPassword) == 0)) {
+
+		fprintf(stderr, "%s: password is not set\n", filename);
+		error = 1;
+	}
+
+	if (
+		(! config_lookup_string(&cfg, "database", &dbDatabase)) ||
+		(strlen(dbDatabase) == 0)) {
+
+		fprintf(stderr, "%s: database is not set\n", filename);
+		error = 1;
 	}
 
 
-	if (! config_lookup_string(&cfg, "hostname", &dbHostname))
-		return ErrorMissingHostname;
-
-	if (strlen(dbHostname) == 0)
-		return ErrorMissingHostname;
-
-	if (! config_lookup_string(&cfg, "username", &dbUsername))
-		return ErrorMissingUsername;
-
-	if (strlen(dbUsername) == 0)
-		return ErrorMissingUsername;
-
-	if (! config_lookup_string(&cfg, "password", &dbPassword))
-		return ErrorMissingPassword;
-
-	if (strlen(dbPassword) == 0)
-		return ErrorMissingPassword;
-
-	if (! config_lookup_string(&cfg, "database", &dbDatabase))
-		return ErrorMissingDatabase;
-
-	if (strlen(dbDatabase) == 0)
-		return ErrorMissingDatabase;
-
-
+	if (error == 1) return -1;
+	printf("Sucessfully laoded %s.\n", filename);
 	return 0;
 }

@@ -14,13 +14,6 @@
 #include <string.h>
 
 
-#define ErrorIO                 -1
-#define ErrorMissingHostname    -2
-#define ErrorMissingUsername    -3
-#define ErrorMissingPassword    -4
-#define ErrorMissingDatabase    -5
-
-
 const char  *dbHostname;
 const char  *dbUsername;
 const char  *dbPassword;
