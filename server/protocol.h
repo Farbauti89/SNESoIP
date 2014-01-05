@@ -35,7 +35,6 @@
 
 	 If received successfully, the SNESoIP goes on by requesting various
 	 configuration parameters (e.g. IP address of the opponent etc.):
-
 	 +-----------+--------------+-----------+----------+
 	 | RequestIP | RequestIPLen | Client ID | Checksum |
 	 +-----------+--------------+-----------+----------+
