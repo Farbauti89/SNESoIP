@@ -11,19 +11,22 @@
 #define PROTOCOL_h
 
 
-/* +-------------+-------------+--------+----------------+
+/* A brief explanation of how the protocol works.
+
+	 A package is constructed as follows:
+	 +-------------+-------------+--------+----------------+
 	 | Function ID | Data length |  Data  | CRC16 checksum |
 	 +-------------+-------------+--------+----------------+
 	 | 1 Byte      | 1 Byte      | N byte | 2 Byte         |
 	 +-------------+-------------+--------+----------------+
 
 
-	 A simple login sequence could be implemented as follows:
+	 A simple login sequence could be implemented like this:
 
 	 At startup the SNESoIP sends following package to the server.
 	 +-------+----------+-----------+----------+
 	 | Login | LoginLen | Client ID | Checksum |
-   +-------+----------+-----------+----------+
+	 +-------+----------+-----------+----------+
 
 	 On success (e.g. server is up), the server sends following reply:
 	 +-------+----------+-----------+----------+
