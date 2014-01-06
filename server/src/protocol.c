@@ -35,7 +35,7 @@ uint16_t crc16(const uint8_t *data, uint16_t length) {
 
 			if (bitFlag)
 				out ^= 0x8005;
-    }
+		}
 
 
 		for (i = 0; i < 16; ++i) {
