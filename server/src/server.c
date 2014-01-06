@@ -13,8 +13,8 @@
 int main(int argc, char* argv[]) {
 	struct sockaddr_in clientAddr, serverAddr;
 	int    opt, len, received, sockfd;
-	char   recvBuffer[6];
-	char   sendBuffer[20];
+	char   recvBuffer[BufferSize];
+	char   sendBuffer[BufferSize];
 	char  *configfd = "server.cfg";
 
 
@@ -58,8 +58,14 @@ int main(int argc, char* argv[]) {
 		puts("Listening on port 57350.\n");
 
 
+
+
+
+	char *teststring = "123456789";
+	printf("0x%x\n", crc16(teststring, strlen(teststring)));
+
+
 	while (1) {
-		/*
 		len = sizeof(clientAddr);
 		received = recvfrom(sockfd, recvBuffer, BufferSize, 0, (struct sockaddr *)&clientAddr, &len);
 
@@ -67,7 +73,12 @@ int main(int argc, char* argv[]) {
 			fprintf(stderr, "Couldn't receive message: %s\n", strerror(errno));
 			continue;
 		}
-		*/
+
+
+
+
+
+
 
 
 		//getip:   "SELECT currentip FROM snesoip_hw WHERE hwid = %hwid%";
@@ -76,7 +87,10 @@ int main(int argc, char* argv[]) {
 
 
 		//sendto(sockfd, &data, BufferSize, 0, (struct sockaddr *)&clientAddr, sizeof(clientAddr));
+
 	}
+
+
 
 
 	finiMySQL();
