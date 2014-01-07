@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
 	puts("Listening on port 57350.\n");
 
 
-
 	while (1) {
 		len = sizeof(clientAddr);
 		received = recvfrom(sockfd, recvBuffer, 260, 0, (struct sockaddr *)&clientAddr, &len);
@@ -63,9 +62,22 @@ int main(int argc, char* argv[]) {
 			continue;
 
 
-		// ToDo.
+		// Parse commands.
+		switch(recvBuffer[0]) {
+			case Login:
+				// Todo.
+				break;
+
+			case RequestIP:
+				// Todo.
+				break;
+
+			default:
+				sendBuffer[0] = '\0';
+		}
 
 
+		sendto(sockfd, sendBuffer, BufferSize, 0, (struct sockaddr *)&clientAddr, sizeof(clientAddr));
 	}
 
 
