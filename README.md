@@ -58,35 +58,7 @@ And feel free to contribute to our
 
 ### Communication ###
 
-The SNESoIP ethernet adapter is continously sending 4-byte data packets
-via UDP to a (remote) server and receive 2-byte answer packets from the
-(remote) server.
-
-A packet sent to the server has the following format:
-
-	+--------+--------+--------+--------+
-	| Controller Data |  CID   | P2CID  |
-	+--------+--------+--------+--------+
-
-An answer packet has the following format:
-
-	+--------+--------+
-	| Controller Data |
-	+--------+--------+
-
-The 2-byte `Controller Data` field holds the state of SNES controller
-which is basically a 16 bit shift register of which 12 bits are being
-used to represent button states (unused bits are pulled high).
-
-`CID` is a value uniqely identifying the sending controller instance to
-the server and used to store its state on the server.
-
-`P2CID` is the `CID` of your selected "Player Two".  The server will
-answer your packet with the controller data of the controller identified
-by `P2CID`.
-
-Update packets are being sent to the server continously even if the
-local controller state does not change state.
+This section needs to be revised.
 
 ### Switch Mode ###
 
