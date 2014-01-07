@@ -6,7 +6,7 @@
  * license.  See the file LICENSE for details. */
 
 
-#include "conn.h"
+#include "socket.h"
 
 
 int initServer() {

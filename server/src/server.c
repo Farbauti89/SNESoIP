@@ -56,23 +56,14 @@ int main(int argc, char* argv[]) {
 			continue;
 		}
 
-
 		// Get checksum from received data.
-		// Lo-Byte.
-		for (int i = 0; i < 8; i++) {
-			(recvBuffer[3 + recvBuffer[1]] & (1 << i))
-				? (checksum |=  (1 << i))
-				: (checksum &= ~(1 << i));
-		}
-		// Hi-Byte.
-		for (int i = 0; i < 8; i++) {
-			(recvBuffer[2 + recvBuffer[1]] & (1 << i))
-				? (checksum |=  (1 << i + 8))
-				: (checksum &= ~(1 << i + 8));
-		}
+		checksum = (uint8_t)recvBuffer[3 + recvBuffer[1]] | ((uint8_t)recvBuffer[2 + recvBuffer[1]] << 8);
 		// Drop data if checksum is invalid.
 		if (checksum != crc16(recvBuffer, 2 + recvBuffer[1]))
 			continue;
+
+
+		// ToDo.
 
 
 	}

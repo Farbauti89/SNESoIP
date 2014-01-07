@@ -6,8 +6,8 @@
  * license.  See the file LICENSE for details. */
 
 
-#ifndef CONN_h
-#define CONN_h
+#ifndef SOCKET_h
+#define SOCKET_h
 
 #include <netinet/in.h>
 #include <errno.h>
