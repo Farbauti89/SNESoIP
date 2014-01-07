@@ -1,7 +1,7 @@
 # SNESoIP server #
 
 
-The official server can be found here: [snesoip.de](http://snesoip.de
+The web interface of the official server is hosted at: [snesoip.de](http://snesoip.de
 "SNESoIP server")
 
 
