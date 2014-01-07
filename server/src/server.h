@@ -14,9 +14,9 @@
 #include <getopt.h>
 #include <unistd.h>
 #include "config.h"
-#include "conn.h"
-#include "protocol.h"
 #include "mysql.h"
+#include "protocol.h"
+#include "socket.h"
 
 
 char* uint16_t2bin(uint16_t num);

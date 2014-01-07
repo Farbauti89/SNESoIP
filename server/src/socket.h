@@ -1,4 +1,4 @@
-/* conn.h -*-c-*-
+/* socket.h -*-c-*-
  * Connection handler
  * Copyright (c) 2013 Michael Fitzmayer.  All rights reserved.
  *
