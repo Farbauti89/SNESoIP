@@ -10,7 +10,7 @@
 #include "protocol.h"
 
 
-uint16_t crc16(const uint8_t *data, uint16_t length) {
+uint16_t crc16(const uint8_t *data, uint8_t length) {
 	int      i, bitFlag, bitsRead = 0;
 	uint16_t checksum = 0;
 	uint16_t out = 0;

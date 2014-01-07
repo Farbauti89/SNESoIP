@@ -62,7 +62,10 @@
 #define IPLen          4
 
 
-uint16_t crc16(const uint8_t *data, uint16_t size);
+uint16_t checksum;
+
+
+uint16_t crc16(const uint8_t *data, uint8_t length);
 
 
 #endif

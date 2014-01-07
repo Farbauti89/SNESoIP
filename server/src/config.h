@@ -14,9 +14,6 @@
 #include <string.h>
 
 
-#define BufferSize 300
-
-
 const char  *dbHostname;
 const char  *dbUsername;
 const char  *dbPassword;

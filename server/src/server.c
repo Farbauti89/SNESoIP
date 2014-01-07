@@ -11,18 +11,16 @@
 
 
 int main(int argc, char* argv[]) {
-	struct sockaddr_in clientAddr, serverAddr;
-	int    opt, len, received, sockfd;
-	char   recvBuffer[BufferSize];
-	char   sendBuffer[BufferSize];
-	char  *configfd = "server.cfg";
+	char  *configfd = "server.conf";
+	int    opt;
+	int    len, received;
 
 
 	puts(" _______ _______ _______ _______         _______ ______");
 	puts("|     __|    |  |    ___|     __|.-----.|_     _|   __ \\");
 	puts("|__     |       |    ___|__     ||  _  | _|   |_|    __/");
 	puts("|_______|__|____|_______|_______||_____||_______|___|   server\n");
-	puts("-c <config>\tload specific config file (defalt: server.cfg).\n");
+	puts("-c <config>\tload specific config file (defalt: server.conf).\n");
 
 
 	// Parse command-line arguments.
@@ -33,41 +31,25 @@ int main(int argc, char* argv[]) {
 				break;
 		}
 
-
 	// Initialise configuration file.
 	if (initConfig(configfd) == -1)
 		return EXIT_FAILURE;
-
 
 	// Initialise database connection.
 	if (initMySQL() == -1)
 		return EXIT_FAILURE;
 
-
 	// Setting up the server.
-	sockfd                     = socket(AF_INET, SOCK_DGRAM, 0);
-	serverAddr.sin_family      = AF_INET;
-	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serverAddr.sin_port        = htons(57350);
-
-	if ((bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr))) == -1) {
-		fprintf(stderr, "Couldn't bind name to socket: %s\n", strerror(errno));
+	if (initServer() == -1)
 		return EXIT_FAILURE;
 
-	} else
-		puts("Listening on port 57350.\n");
+	puts("Listening on port 57350.\n");
 
-
-
-
-
-	char *teststring = "123456789";
-	printf("0x%x\n", crc16(teststring, strlen(teststring)));
 
 
 	while (1) {
 		len = sizeof(clientAddr);
-		received = recvfrom(sockfd, recvBuffer, BufferSize, 0, (struct sockaddr *)&clientAddr, &len);
+		received = recvfrom(sockfd, recvBuffer, 260, 0, (struct sockaddr *)&clientAddr, &len);
 
 		if (received == -1) {
 			fprintf(stderr, "Couldn't receive message: %s\n", strerror(errno));
@@ -75,41 +57,28 @@ int main(int argc, char* argv[]) {
 		}
 
 
+		// Get checksum from received data.
+		// Lo-Byte.
+		for (int i = 0; i < 8; i++) {
+			(recvBuffer[3 + recvBuffer[1]] & (1 << i))
+				? (checksum |=  (1 << i))
+				: (checksum &= ~(1 << i));
+		}
+		// Hi-Byte.
+		for (int i = 0; i < 8; i++) {
+			(recvBuffer[2 + recvBuffer[1]] & (1 << i))
+				? (checksum |=  (1 << i + 8))
+				: (checksum &= ~(1 << i + 8));
+		}
+		// Drop data if checksum is invalid.
+		if (checksum != crc16(recvBuffer, 2 + recvBuffer[1]))
+			continue;
 
-
-
-
-
-
-		//getip:   "SELECT currentip FROM snesoip_hw WHERE hwid = %hwid%";
-		//setip:   "UPDATE snesoip_hw SET currentip = '%ip%' WHERE hwid = %hwid%;"
-		//getuser: "
-
-
-		//sendto(sockfd, &data, BufferSize, 0, (struct sockaddr *)&clientAddr, sizeof(clientAddr));
 
 	}
-
-
 
 
 	finiMySQL();
 	close(sockfd);
 	return EXIT_SUCCESS;
-}
-
-
-char* uint16_t2bin(uint16_t num) {
-	int   bitStrLen = sizeof(uint16_t) * 8 * sizeof(char);
-	char* bin       = (char*)malloc(bitStrLen);
-
-	for (int i = (bitStrLen - 1); i >= 0; i--) {
-		int k = 1 & num;
-		*(bin + i) = ((k == 1) ? '1' : '0');
-		num >>= 1;
-	}
-
-	bin[16] = '\0';
-
-	return bin;
 }
