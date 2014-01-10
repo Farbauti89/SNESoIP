@@ -10,16 +10,21 @@
 #ifndef SERVER_h
 #define SERVER_h
 
-
+#include <errno.h>
 #include <getopt.h>
+#include <netinet/in.h>
 #include <unistd.h>
-#include "config.h"
 #include "mysql.h"
 #include "protocol.h"
-#include "socket.h"
+
+
+
+#define BufferSize 260
+
 
 
 char* uint16_t2bin(uint16_t num);
+
 
 
 #endif

@@ -10,10 +10,22 @@
 #include "server.h"
 
 
+
 int main(int argc, char* argv[]) {
-	char  *configfd = "server.conf";
-	int    opt;
-	int    len, received;
+	struct sockaddr_in clientAddr;
+	struct sockaddr_in serverAddr;
+
+	uint16_t checksum;
+
+	int    options;
+	char  *confFile = "server.conf";
+	MYSQL *dbCon;
+
+	int    sockfd;
+	int    length, received;
+	char   recvBuffer[BufferSize];
+	char   sendBuffer[BufferSize];
+
 
 
 	puts(" _______ _______ _______ _______         _______ ______");
@@ -23,37 +35,48 @@ int main(int argc, char* argv[]) {
 	puts("-c <config>\tload specific config file (defalt: server.conf).\n");
 
 
+
 	// Parse command-line arguments.
-	while ((opt = getopt(argc, argv, "c:")) != -1)
-		switch (opt) {
+	while ((options = getopt(argc, argv, "c:")) != -1)
+		switch (options) {
 			case 'c':
-				configfd = optarg;
+				confFile = optarg;
 				break;
 		}
 
-	// Initialise configuration file.
-	if (initConfig(configfd) == -1)
-		return EXIT_FAILURE;
+
 
 	// Initialise database connection.
-	if (initMySQL() == -1)
+	if (initMySQL(dbCon, confFile) == -1)
 		return EXIT_FAILURE;
+
+
 
 	// Setting up the server.
-	if (initServer() == -1)
-		return EXIT_FAILURE;
+	sockfd                     = socket(AF_INET, SOCK_DGRAM, 0);
+	serverAddr.sin_family      = AF_INET;
+	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	serverAddr.sin_port        = htons(57350);
 
+
+	if ((bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr))) == -1) {
+		fprintf(stderr, "Couldn't bind name to socket: %s\n", strerror(errno));
+		return EXIT_FAILURE;
+	}
 	puts("Listening on port 57350.\n");
 
 
+
+	// Begin main program.
 	while (1) {
-		len = sizeof(clientAddr);
-		received = recvfrom(sockfd, recvBuffer, 260, 0, (struct sockaddr *)&clientAddr, &len);
+		length   = sizeof(clientAddr);
+		received = recvfrom(sockfd, recvBuffer, 260, 0, (struct sockaddr *)&clientAddr, &length);
 
 		if (received == -1) {
 			fprintf(stderr, "Couldn't receive message: %s\n", strerror(errno));
 			continue;
 		}
+
 
 		// Get checksum from received data.
 		checksum = (uint8_t)recvBuffer[3 + recvBuffer[1]] | ((uint8_t)recvBuffer[2 + recvBuffer[1]] << 8);
@@ -65,15 +88,12 @@ int main(int argc, char* argv[]) {
 		// Parse commands.
 		switch(recvBuffer[0]) {
 			case Login:
-				// Todo.
-				break;
+
+				continue;
 
 			case RequestIP:
-				// Todo.
-				break;
 
-			default:
-				sendBuffer[0] = '\0';
+				continue;
 		}
 
 
@@ -81,7 +101,8 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	finiMySQL();
+
+	finiMySQL(dbCon);
 	close(sockfd);
 	return EXIT_SUCCESS;
 }

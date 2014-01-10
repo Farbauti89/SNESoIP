@@ -7,7 +7,9 @@
  * details. */
 
 
+
 #include "protocol.h"
+
 
 
 uint16_t crc16(const uint8_t *data, uint8_t length) {

@@ -10,15 +10,17 @@
 #ifndef MYSQL_h
 #define MYSQL_h
 
+#include <libconfig.h>
 #include <mysql.h>
-#include "config.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
-MYSQL *dbCon;
 
+int  initMySQL(MYSQL *con, char *confFile);
+void finiMySQL(MYSQL *con);
 
-int  initMySQL();
-void finiMySQL();
 
 
 #endif

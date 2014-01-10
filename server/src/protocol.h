@@ -7,11 +7,13 @@
  * details. */
 
 
+
 #ifndef PROTOCOL_h
 #define PROTOCOL_h
 
 #include <stdint.h>
 #include <stdlib.h>
+
 
 
 /* A brief explanation of how the protocol works.
@@ -62,10 +64,9 @@
 #define IPLen          4
 
 
-uint16_t checksum;
-
 
 uint16_t crc16(const uint8_t *data, uint8_t length);
+
 
 
 #endif
