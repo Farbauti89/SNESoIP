@@ -12,20 +12,22 @@
 
 
 int main(int argc, char* argv[]) {
-	struct sockaddr_in clientAddr;
-	struct sockaddr_in serverAddr;
+	int      options;                // Database.
+	char    *confFile = "server.conf";
+	MYSQL   *dbCon;
 
-	uint16_t checksum;
+	struct   sockaddr_in clientAddr; // Server.
+	struct   sockaddr_in serverAddr;
+	int      sockfd;
+	int      length, received;
+	char     recvBuffer[BufferSize];
+	char     sendBuffer[BufferSize];
 
-	int    options;
-	char  *confFile = "server.conf";
-	MYSQL *dbCon;
+	char*    nlpos;                  // Timestamp.
+	char*    timestamp;
+	time_t   ltime;
 
-	int    sockfd;
-	int    length, received;
-	char   recvBuffer[BufferSize];
-	char   sendBuffer[BufferSize];
-
+	uint16_t checksum;               // Misc.
 
 
 	puts(" _______ _______ _______ _______         _______ ______");
@@ -33,7 +35,6 @@ int main(int argc, char* argv[]) {
 	puts("|__     |       |    ___|__     ||  _  | _|   |_|    __/");
 	puts("|_______|__|____|_______|_______||_____||_______|___|   server\n");
 	puts("-c <config>\tload specific config file (defalt: server.conf).\n");
-
 
 
 	// Parse command-line arguments.
@@ -45,11 +46,9 @@ int main(int argc, char* argv[]) {
 		}
 
 
-
 	// Initialise database connection.
 	if (initMySQL(dbCon, confFile) == -1)
 		return EXIT_FAILURE;
-
 
 
 	// Setting up the server.
@@ -64,7 +63,6 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 	puts("Listening on port 57350.\n");
-
 
 
 	// Begin main program.
@@ -85,6 +83,13 @@ int main(int argc, char* argv[]) {
 			continue;
 
 
+		// Format timestamp.
+		ltime     = time(NULL);
+		timestamp = ctime(&ltime);
+		nlpos     = strstr(timestamp, "\n");
+		strncpy(nlpos, "\0", 1);
+
+
 		// Parse commands.
 		switch(recvBuffer[0]) {
 			case Login:
@@ -99,7 +104,6 @@ int main(int argc, char* argv[]) {
 
 		sendto(sockfd, sendBuffer, BufferSize, 0, (struct sockaddr *)&clientAddr, sizeof(clientAddr));
 	}
-
 
 
 	finiMySQL(dbCon);

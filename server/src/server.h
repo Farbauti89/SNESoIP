@@ -14,16 +14,13 @@
 #include <getopt.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <time.h>
 #include "mysql.h"
 #include "protocol.h"
 
 
 
 #define BufferSize 260
-
-
-
-char* uint16_t2bin(uint16_t num);
 
 
 
