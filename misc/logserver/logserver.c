@@ -43,15 +43,15 @@ int main(int argc, char* argv[]) {
 	puts("|  ||  _  |  _  |__ --|  -__|   _|  |  |  -__|   _|");
 	puts("|__||_____|___  |_____|_____|__|  \\___/|_____|__|");
 	puts("          |_____| for SNESoIP\n");
-  puts("-l <logfile>\tload specific logfile file (defalt: default.log).\n");
+	puts("-l <logfile>\tload specific logfile file (defalt: default.log).\n");
 
 
-  // Parse command-line arguments.
-  while ((opt = getopt(argc, argv, "c:")) != -1)
-    switch (opt) {
-      case 'c':
+	// Parse command-line arguments.
+	while ((opt = getopt(argc, argv, "c:")) != -1)
+		switch (opt) {
+			case 'c':
 				logfile = optarg;
-        break;
+				break;
 		}
 
 
