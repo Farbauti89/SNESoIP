@@ -7,7 +7,6 @@
  * details. */
 
 
-
 #ifndef PROTOCOL_h
 #define PROTOCOL_h
 

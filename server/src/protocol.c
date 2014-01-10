@@ -7,7 +7,6 @@
  * details. */
 
 
-
 #include "protocol.h"
 
 
