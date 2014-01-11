@@ -13,7 +13,7 @@
 
 int main(int argc, char* argv[]) {
 	extern MYSQL *dbCon;
-	int           options;              // Database.
+	int           options;           // Database.
 	char         *confFile = "server.conf";
 
 	struct   sockaddr_in clientAddr; // Server.
