@@ -18,8 +18,19 @@
 
 
 
-int  initMySQL(MYSQL *con, char *confFile);
-void finiMySQL(MYSQL *con);
+#define QueryBufferSize 150
+
+
+
+MYSQL *dbCon;
+
+
+
+int   initMySQL(char *confFile);
+void  finiMySQL();
+
+char *getUsername(int hwID);
+int   setIP(char *ipAddr, int hwID);
 
 
 

@@ -11,14 +11,14 @@
 
 
 
-int initMySQL(MYSQL *con, char *confFile) {
+int initMySQL(char *confFile) {
 	const char *hostname;
 	const char *username;
 	const char *password;
 	const char *database;
 
 	char error = 0;
-	con = mysql_init(NULL);
+	dbCon = mysql_init(NULL);
 
 
 	// Initialise and read configuration file.
@@ -32,22 +32,22 @@ int initMySQL(MYSQL *con, char *confFile) {
 		return -1;
 	}
 
-	if ( (! config_lookup_string(&conf, "hostname", &hostname)) || (strlen(hostname) == 0) ) {
+	if ( (! config_lookup_string(&conf, "hostname", &hostname) ) || (strlen(hostname) == 0) ) {
 		fprintf(stderr, "%s: hostname is not set\n", confFile);
 		error = 1;
 	}
 
-	if ( (! config_lookup_string(&conf, "username", &username)) || (strlen(username) == 0) ) {
+	if ( (! config_lookup_string(&conf, "username", &username) ) || (strlen(username) == 0) ) {
 		fprintf(stderr, "%s: username is not set\n", confFile);
 		error = 1;
 	}
 
-	if ( (! config_lookup_string(&conf, "password", &password)) || (strlen(password) == 0) ) {
+	if ( (! config_lookup_string(&conf, "password", &password) ) || (strlen(password) == 0) ) {
 		fprintf(stderr, "%s: password is not set\n", confFile);
 		error = 1;
 	}
 
-	if ( (! config_lookup_string(&conf, "database", &database)) || (strlen(database) == 0) ) {
+	if ( (! config_lookup_string(&conf, "database", &database) ) || (strlen(database) == 0) ) {
 		fprintf(stderr, "%s: database is not set\n", confFile);
 		error = 1;
 	}
@@ -57,18 +57,18 @@ int initMySQL(MYSQL *con, char *confFile) {
 
 
 	// Initialise database connection.
-	if (! con) {
-		fprintf(stderr, "%s\n", mysql_error(con));
+	if (! dbCon) {
+		fprintf(stderr, "%s\n", mysql_error(dbCon) );
 		return -1;
 	}
 
 
 	// Establish database connection.
-	if (mysql_real_connect(con, hostname, username, password,
+	if (mysql_real_connect(dbCon, hostname, username, password,
 			database, 0, NULL, 0) == NULL) {
 
-		fprintf(stderr, "%s\n", mysql_error(con));
-		mysql_close(con);
+		fprintf(stderr, "%s\n", mysql_error(dbCon) );
+		mysql_close(dbCon);
 		return -1;
 	}
 	puts("Database connection established.");
@@ -80,4 +80,52 @@ int initMySQL(MYSQL *con, char *confFile) {
 
 
 
-void finiMySQL(MYSQL *con) { mysql_close(con); }
+void finiMySQL() { mysql_close(dbCon); }
+
+
+
+char *getUsername(int hwID) {
+	char       query[QueryBufferSize];
+	MYSQL_RES *res;
+	MYSQL_ROW  username;
+
+
+	sprintf(query,
+		"SELECT user.username FROM snesoip_hw INNER JOIN user ON snesoip_hw.user_userid = user.userid WHERE snesoip_hw.hwid = %i",
+		hwID);
+
+	if (mysql_query(dbCon, query) != 0) {
+		fprintf(stderr, "%s", mysql_error(dbCon) );
+		return NULL;
+	}
+
+	if ( (res = mysql_store_result(dbCon)) == NULL) {
+		fprintf(stderr, "%s", mysql_error(dbCon) );
+		return NULL;
+	}
+
+	if ( (username = mysql_fetch_row(res)) == NULL) {
+		fprintf(stderr, "%s", mysql_error(dbCon) );
+		return NULL;
+	}
+
+	mysql_free_result(res);
+	return username[0];
+}
+
+
+
+int setIP(char *ipAddr, int hwID) {
+	char       query[QueryBufferSize];
+	MYSQL_RES *res;
+
+
+	sprintf(query, "UPDATE snesoip_hw SET currentip = '%s' WHERE hwid = %i;", ipAddr, hwID);
+	if (mysql_query(dbCon, query) != 0) {
+		fprintf(stderr, "%s", mysql_error(dbCon) );
+		return -1;
+	}
+
+
+	return 0;
+}

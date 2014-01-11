@@ -10,6 +10,7 @@
 #ifndef SERVER_h
 #define SERVER_h
 
+#include <arpa/inet.h>
 #include <errno.h>
 #include <getopt.h>
 #include <netinet/in.h>

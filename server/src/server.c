@@ -12,9 +12,9 @@
 
 
 int main(int argc, char* argv[]) {
-	int      options;                // Database.
-	char    *confFile = "server.conf";
-	MYSQL   *dbCon;
+	extern MYSQL *dbCon;
+	int           options;              // Database.
+	char         *confFile = "server.conf";
 
 	struct   sockaddr_in clientAddr; // Server.
 	struct   sockaddr_in serverAddr;
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
 
 	// Parse command-line arguments.
-	while ((options = getopt(argc, argv, "c:")) != -1)
+	while ( (options = getopt(argc, argv, "c:") ) != -1)
 		switch (options) {
 			case 'c':
 				confFile = optarg;
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
 
 	// Initialise database connection.
-	if (initMySQL(dbCon, confFile) == -1)
+	if (initMySQL(confFile) == -1)
 		return EXIT_FAILURE;
 
 
@@ -58,8 +58,8 @@ int main(int argc, char* argv[]) {
 	serverAddr.sin_port        = htons(57350);
 
 
-	if ((bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr))) == -1) {
-		fprintf(stderr, "Couldn't bind name to socket: %s\n", strerror(errno));
+	if ( (bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr) ) ) == -1) {
+		fprintf(stderr, "Couldn't bind name to socket: %s\n", strerror(errno) );
 		return EXIT_FAILURE;
 	}
 	puts("Listening on port 57350.\n");
@@ -71,15 +71,15 @@ int main(int argc, char* argv[]) {
 		received = recvfrom(sockfd, recvBuffer, 260, 0, (struct sockaddr *)&clientAddr, &length);
 
 		if (received == -1) {
-			fprintf(stderr, "Couldn't receive message: %s\n", strerror(errno));
+			fprintf(stderr, "Couldn't receive message: %s\n", strerror(errno) );
 			continue;
 		}
 
 
 		// Get checksum from received data.
-		checksum = (uint8_t)recvBuffer[3 + recvBuffer[1]] | ((uint8_t)recvBuffer[2 + recvBuffer[1]] << 8);
+		checksum = (uint8_t)recvBuffer[3 + recvBuffer[1]] | ( (uint8_t)recvBuffer[2 + recvBuffer[1]] << 8);
 		// Drop data if checksum is invalid.
-		if (checksum != crc16(recvBuffer, 2 + recvBuffer[1]))
+		if (checksum != crc16(recvBuffer, 2 + recvBuffer[1]) )
 			continue;
 
 
@@ -92,17 +92,24 @@ int main(int argc, char* argv[]) {
 
 		// Parse commands.
 		switch(recvBuffer[0]) {
+
+
 			case Login:
 
+				if (getUsername(recvBuffer[2]) != NULL)
+					printf("%s Login: %s. ", timestamp, getUsername(recvBuffer[2]) );
+				if (setIP(inet_ntoa(clientAddr.sin_addr), recvBuffer[2]) == 0)
+					printf("IP set to %s.", inet_ntoa(clientAddr.sin_addr) );
+				printf("\n");
 				continue;
 
-			case RequestIP:
 
+			case RequestIP:
 				continue;
 		}
 
 
-		sendto(sockfd, sendBuffer, BufferSize, 0, (struct sockaddr *)&clientAddr, sizeof(clientAddr));
+		sendto(sockfd, sendBuffer, BufferSize, 0, (struct sockaddr *)&clientAddr, sizeof(clientAddr) );
 	}
 
 
