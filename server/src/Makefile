@@ -4,7 +4,7 @@
 
 all:
 	gcc -std=c99 -lconfig `mysql_config --cflags --libs` -o ../server \
-	mysql.c protocol.c server.c
+	mysql.c protocol.c server.c utils.c
 
 clean:
 	rm ../server

@@ -84,15 +84,36 @@ void finiMySQL() { mysql_close(dbCon); }
 
 
 
-char *getUsername(int hwID) {
+// This function should be simplified in the future!
+char *getMySQLrow(int rowID, int hwID) {
 	char       query[QueryBufferSize];
 	MYSQL_RES *res;
-	MYSQL_ROW  username;
+	MYSQL_ROW  row;
 
 
-	sprintf(query,
-		"SELECT user.username FROM snesoip_hw INNER JOIN user ON snesoip_hw.user_userid = user.userid WHERE snesoip_hw.hwid = %i",
-		hwID);
+	switch(rowID) {
+		case IPaddress:
+			sprintf(query,
+				"SELECT currentip FROM snesoip_hw WHERE hwid = %i",
+				hwID);
+			break;
+
+		case OpponentID:
+			sprintf(query,
+				"SELECT hwid_opponent FROM snesoip_hw WHERE hwid = %i",
+				hwID);
+			break;
+
+		case Username:
+			sprintf(query,
+				"SELECT user.username FROM snesoip_hw INNER JOIN user ON snesoip_hw.user_userid = user.userid WHERE snesoip_hw.hwid = %i",
+				hwID);
+			break;
+
+		default:
+			return NULL;
+	}
+
 
 	if (mysql_query(dbCon, query) != 0) {
 		fprintf(stderr, "%s", mysql_error(dbCon) );
@@ -104,23 +125,38 @@ char *getUsername(int hwID) {
 		return NULL;
 	}
 
-	if ( (username = mysql_fetch_row(res)) == NULL) {
+	if ( (row = mysql_fetch_row(res)) == NULL) {
 		fprintf(stderr, "%s", mysql_error(dbCon) );
 		return NULL;
 	}
 
+
 	mysql_free_result(res);
-	return username[0];
+	return row[0];
 }
 
 
 
-int setIP(char *ipAddr, int hwID) {
+int setMySQLrow(int rowID, int hwID, char *string) {
 	char       query[QueryBufferSize];
 	MYSQL_RES *res;
 
 
-	sprintf(query, "UPDATE snesoip_hw SET currentip = '%s' WHERE hwid = %i;", ipAddr, hwID);
+	switch(rowID) {
+		case IPaddress:
+			if (! isValidIP(string))
+				return -1;
+
+			sprintf(query,
+				"UPDATE snesoip_hw SET currentip = \"%s\" WHERE hwid = %i;",
+				string, hwID);
+			break;
+
+		default:
+			return -1;
+	}
+
+
 	if (mysql_query(dbCon, query) != 0) {
 		fprintf(stderr, "%s", mysql_error(dbCon) );
 		return -1;

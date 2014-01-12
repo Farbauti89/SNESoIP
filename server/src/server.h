@@ -15,9 +15,9 @@
 #include <getopt.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <time.h>
 #include "mysql.h"
 #include "protocol.h"
+#include "utils.h"
 
 
 

@@ -23,11 +23,11 @@ int main(int argc, char* argv[]) {
 	char     recvBuffer[BufferSize];
 	char     sendBuffer[BufferSize];
 
-	char*    nlpos;                  // Timestamp.
-	char*    timestamp;
-	time_t   ltime;
-
 	uint16_t checksum;               // Misc.
+	char*    timestamp;
+	char*    username;
+	char*    opponentID;
+	char*    ipAddr;
 
 
 	puts(" _______ _______ _______ _______         _______ ______");
@@ -83,29 +83,54 @@ int main(int argc, char* argv[]) {
 			continue;
 
 
-		// Format timestamp.
-		ltime     = time(NULL);
-		timestamp = ctime(&ltime);
-		nlpos     = strstr(timestamp, "\n");
-		strncpy(nlpos, "\0", 1);
+		timestamp = getTimestamp();
 
 
 		// Parse commands.
 		switch(recvBuffer[0]) {
 
-
 			case Login:
+				/* +-------+----------+-----------+----------+
+					 | Login | LoginLen | Client ID | Checksum |
+					 +-------+----------+-----------+----------+ */
+				if ( (username = getMySQLrow(Username, recvBuffer[2]) )  == NULL)
+					continue;
+				printf("%s Login: %s. ", timestamp, username);
 
-				if (getUsername(recvBuffer[2]) != NULL)
-					printf("%s Login: %s. ", timestamp, getUsername(recvBuffer[2]) );
-				if (setIP(inet_ntoa(clientAddr.sin_addr), recvBuffer[2]) == 0)
-					printf("IP set to %s.", inet_ntoa(clientAddr.sin_addr) );
-				printf("\n");
-				continue;
+				if (setMySQLrow(IPaddress, recvBuffer[2], inet_ntoa(clientAddr.sin_addr) ) == -1)
+					continue;
+				ipAddr = inet_ntoa(clientAddr.sin_addr);
+				printf("IP set to %s.\n", ipAddr);
+
+				sendBuffer[0] = Hello;
+				sendBuffer[1] = HelloLen;
+				sendBuffer[2] = recvBuffer[2];
+				checksum      = crc16(sendBuffer, HelloLen);
+				sendBuffer[3] = checksum >> 8;
+				sendBuffer[4] = checksum  & 0xff;
+				break;
 
 
 			case RequestIP:
-				continue;
+				/* +-----------+--------------+-----------+----------+
+					 | RequestIP | RequestIPLen | Client ID | Checksum |
+					 +-----------+--------------+-----------+----------+ */
+				if (getMySQLrow(Username, recvBuffer[2]) == NULL)
+					continue;
+
+				if (getMySQLrow(Username, atoi(getMySQLrow(OpponentID, recvBuffer[2]) ) ) == NULL)
+					continue;
+
+				username = getMySQLrow(Username, recvBuffer[2]);
+				printf("%s RequestIP: %s requested IP of ", timestamp, username);
+
+				username = getMySQLrow(Username, atoi(getMySQLrow(OpponentID, recvBuffer[2] ) ) );
+				printf("%s.\n", username);
+
+				sendBuffer[0] = IP;
+				sendBuffer[1] = IPLen;
+				// TODO.
+				break;
 		}
 
 

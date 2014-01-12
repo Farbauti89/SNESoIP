@@ -15,10 +15,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "utils.h"
 
 
 
 #define QueryBufferSize 150
+// Row IDs for getMySQLrow() and setMySQLrow().
+#define IPaddress  0
+#define OpponentID 1
+#define Username   2
 
 
 
@@ -29,8 +34,8 @@ MYSQL *dbCon;
 int   initMySQL(char *confFile);
 void  finiMySQL();
 
-char *getUsername(int hwID);
-int   setIP(char *ipAddr, int hwID);
+char *getMySQLrow(int rowID, int hwID); // This function should be simplified in the future!
+int   setMySQLrow(int rowID, int hwID, char *string);
 
 
 
