@@ -90,9 +90,9 @@ int main(int argc, char* argv[]) {
 		switch(recvBuffer[0]) {
 
 			case Login:
-				/* +-------+----------+-----------+----------+
-					 | Login | LoginLen | Client ID | Checksum |
-					 +-------+----------+-----------+----------+ */
+				// +-------+----------+-----------+----------+
+				// | Login | LoginLen | Client ID | Checksum |
+				// +-------+----------+-----------+----------+
 				if ( (username = getMySQLrow(Username, recvBuffer[2]) )  == NULL)
 					continue;
 				printf("%s Login: %s. ", timestamp, username);
@@ -112,9 +112,9 @@ int main(int argc, char* argv[]) {
 
 
 			case RequestIP:
-				/* +-----------+--------------+-----------+----------+
-					 | RequestIP | RequestIPLen | Client ID | Checksum |
-					 +-----------+--------------+-----------+----------+ */
+				// +-----------+--------------+-----------+----------+
+				// | RequestIP | RequestIPLen | Client ID | Checksum |
+				// +-----------+--------------+-----------+----------+
 				if (getMySQLrow(Username, recvBuffer[2]) == NULL)
 					continue;
 
