@@ -47,9 +47,9 @@ int main(int argc, char* argv[]) {
 
 
 	// Parse command-line arguments.
-	while ((opt = getopt(argc, argv, "c:")) != -1)
+	while ((opt = getopt(argc, argv, "l:")) != -1)
 		switch (opt) {
-			case 'c':
+			case 'l':
 				logfile = optarg;
 				break;
 		}
