@@ -61,9 +61,9 @@ class DatabaseConnection
 
 			if (!$statement)
 			{
-    			echo "\nPDO::errorInfo():\n";
-    			print_r($dbh->errorInfo());
-    			die();
+    				echo "\nPDO::errorInfo():\n";
+    				print_r($dbh->errorInfo());
+    				die();
 			}
 
 			$statement->bindParam(":username",$user->name);
@@ -84,7 +84,7 @@ class DatabaseConnection
 		{
 			print "Could not add user";
 			print $e->getMessage();
-
+			return false;
 		}
 	}
 
@@ -98,11 +98,11 @@ class DatabaseConnection
 			$statement->bindParam(":userid", $hardware->owner);
 			$statement->bindParam(":currentip", $hardware->currentIP);
 
-			$statement->execute();
+			return $statement->execute();
 		}
 		catch (PDOException $e)
 		{
-			print "Could not add user";
+			print "Could not add device";
 			print $e->getMessage();
 
 		}
@@ -117,14 +117,7 @@ class DatabaseConnection
 			$statement->bindParam(":password",$newPasswordHash);
 			$statement->bindParam(":userid",$userid);
 
-			if ($statement->execute())
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return $statement->execute();
 		}
 		catch (PDOException $e)
 		{
@@ -175,6 +168,7 @@ class DatabaseConnection
 		{
 			print "Could not get list of user hardware";
 			print $e->getMessage();
+			return null;
 		}
 
 	}
@@ -208,6 +202,7 @@ class DatabaseConnection
 		{
 			print "Could not get list of user hardware";
 			print $e->getMessage();
+			return null;
 		}
 	}
 
@@ -292,6 +287,7 @@ class DatabaseConnection
 		{
 			print "Could not get user";
 			print $e->getMessage();
+			return null;
 		}
 	}
 
@@ -322,9 +318,54 @@ class DatabaseConnection
 		{
 			print "Could not get user";
 			print $e->getMessage();
+			return null;
 		}
 	}
 
+	public function SetAvatar($userid, $avatar)
+	{
+		try
+		{
+			$profileID = $this->GetProfileID($userid);
+			if (!is_null($profileID))
+			{
+				$statement = $this->dbConnection->prepare("UPDATE profile SET avatar = :avatar WHERE idprofile = :idprofile");
+				$statement->bindParam(":avatar",$avatar);
+				$statement->bindParam(":idprofile",$profileID);
+
+				return $statement->execute();
+			}
+		}
+		catch (PDOException $e)
+		{
+			print $e->getMessage();
+			return false;
+		}
+	}
+	
+	public function GetAvatar($userid)
+	{
+		try
+		{
+			$statement = $this->dbConnection->prepare("SELECT profile.avatar FROM user RIGHT JOIN profile ON user.profile_idprofile = profile.idprofile WHERE userid = :userid");
+			$statement->bindParam(":userid",$userid);
+
+			if ($statement->execute())
+			{
+				if ($row = $statement->fetch(PDO::FETCH_ASSOC))
+				{
+					return $row["avatar"];
+				}
+			}
+
+			return null;
+		}
+		catch (PDOException $e)
+		{
+			return null;
+		}
+	}
+	
 	public function UpdateProfile($profile, $userid)
 	{
 		try
@@ -332,21 +373,13 @@ class DatabaseConnection
 			$profileID = $this->GetProfileID($userid);
 			if (!is_null($profileID))
 			{
-				$statement = $this->dbConnection->prepare("UPDATE profile SET realname = :realname, avatar = :avatar, region = :region, email = :email WHERE idprofile = :idprofile");
+				$statement = $this->dbConnection->prepare("UPDATE profile SET realname = :realname, region = :region, email = :email WHERE idprofile = :idprofile");
 				$statement->bindParam(":realname",$profile->realName);
-				$statement->bindParam(":avatar",$profile->avatar);
 				$statement->bindParam(":region",$profile->region);
 				$statement->bindParam(":email",$profile->email);
 				$statement->bindParam(":idprofile",$profileID);
 
-				if ($statement->execute())
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				return $statement->execute();
 			}
 			else
 			{
@@ -388,7 +421,7 @@ class DatabaseConnection
 		{
 			print "Could not get user";
 			print $e->getMessage();
-			return false;
+			return null;
 		}
 	}
 
@@ -400,14 +433,7 @@ class DatabaseConnection
 			$statement->bindParam(":opponent",$opponentID);
 			$statement->bindParam(":hwid",$hwID);
 
-			if ($statement->execute())
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return $statement->execute();
 		}
 		catch (PDOException $e)
 		{
@@ -459,24 +485,10 @@ class DatabaseConnection
 				if ($statement->execute())
 				{
 					$statement = $this->dbConnection->prepare("CREATE TABLE IF NOT EXISTS `snesoip`.`snesoip_hw` (`hwid` INT NOT NULL,`user_userid` INT NOT NULL, `hwid_opponent` INT NULL, `currentip` VARCHAR(128) NULL, `lastping` VARCHAR(45) NULL, PRIMARY KEY (`hwid`, `user_userid`), INDEX `fk_snesoip_hw_user1_idx` (`user_userid` ASC), CONSTRAINT `fk_snesoip_hw_user1`   FOREIGN KEY (`user_userid`)   REFERENCES `snesoip`.`user` (`userid`)   ON DELETE NO ACTION   ON UPDATE NO ACTION) ENGINE = InnoDB;");
-					if ($statement->execute())
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
+					return $statement->execute();
 				}
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 		catch (PDOException $e)
 		{
