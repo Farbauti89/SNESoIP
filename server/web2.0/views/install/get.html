@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SNESoIP Server</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="web/css/vendor/bootstrap.min.css" rel="stylesheet">
+        <link href="web/css/main.css" rel="stylesheet">
+        
+        <script type="text/javascript" src="web/js/vendor/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h1>SNESoIP server Installation</h1>
+                    </div>
+                </div>
+                
+                <?php if(count($errors)): ?>
+                <div class="row">
+                    <?php foreach($errors as $key => $error): ?>
+                    <div class="col-md-12">
+                        <h3><?php echo $key;?></h3>
+                        <p class="text-danger"><?php echo $error; ?></p>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+                
+                <form id="install" action="/install" method="post">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h2>Database settings</h2>
+                            </div>
+                        </div>
+                    
+			<div class="row">
+                            <div class="col-md-3">
+                                <label for="dbHost">Host:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" name="dbHost" <?php if(isset($dbHost)): ?>value="<?php echo $dbHost; ?>"<?php endif;?> autocomplete="off" autofocus required />
+                            </div>
+			</div>
+                    
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="dbName">Name:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" name="dbName" <?php if(isset($dbName)): ?>value="<?php echo $dbName; ?>"<?php endif;?> autocomplete="off" required />
+                            </div>
+			</div>
+                    
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="dbUserName">Username:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" name="dbUserName" <?php if(isset($dbUserName)): ?>value="<?php echo $dbUserName; ?>"<?php endif;?> autocomplete="off" required />
+                            </div>
+			</div>
+                    
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="dbPassword">Password:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="password" name="dbPassword" <?php if(isset($dbPassword)): ?>value="<?php echo $dbPassword; ?>"<?php endif;?> autocomplete="off" required />
+                            </div>
+			</div>
+                        
+                    </fieldset>
+                    
+                    <fieldset>
+
+			<div class="row">
+                            <div class="col-md-12 text-center">
+				<h2>Admin user</h2>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="adminName">Username:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" name="adminName" <?php if(isset($adminName)): ?>value="<?php echo $adminName; ?>"<?php endif;?> autocomplete="off" required />
+                            </div>
+			</div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="adminPassword">Password:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="password" name="adminPassword" <?php if(isset($adminPassword)): ?>value="<?php echo $adminPassword; ?>"<?php endif;?> autocomplete="off" required />
+                            </div>
+			</div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="adminPasswordVerify">Verify Password:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="password" name="adminPasswordVerify" <?php if(isset($adminPasswordVerify)): ?>value="<?php echo $adminPasswordVerify; ?>"<?php endif;?> autocomplete="off" required />
+                            </div>
+			</div>
+                    </fieldset>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input class="btn btn-danger btn-lg" type="submit" value="»&nbsp;&nbsp;Install" name="installWI" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <footer class="text-center">
+                    <p>Visit the SNESoIP project repository on <a href="https://github.com/mupfelofen-de/SNESoIP">GitHub</a>.</p>
+            </footer>
+        </div>
+    </body>
+</html>
