@@ -1,11 +1,24 @@
 <?php
 
+use Doctrine\Common\ClassLoader;
+
+function initDoctrine(){
+    require 'lib/vendor/doctrine/Doctrine/Common/ClassLoader.php';
+
+    $classLoader = new ClassLoader('Doctrine', 'lib/vendor/doctrine');
+    $classLoader->register();
+}
+
+
+initDoctrine();
 /* @var $f3 Base */
 $f3=require('lib/vendor/f3/base.php');
-$f3->config("config.cfg");
-if(file_exists("user_config.cfg")){
-    $f3->config("user_config.cfg");
+
+if(file_exists("config.cfg")){
+    $f3->config("config.cfg");
 }
+
+$f3->set("UI", "views/");
 
 \lib\Database::getConnection();
 

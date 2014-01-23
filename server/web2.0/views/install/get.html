@@ -42,7 +42,16 @@
                                 <label for="dbHost">Host:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" name="dbHost" <?php if(isset($dbHost)): ?>value="<?php echo $dbHost; ?>"<?php endif;?> autocomplete="off" autofocus required />
+                                <input type="text" name="dbHost" <?php if(isset($formData["dbHost"])): ?>value="<?php echo $formData["dbHost"]; ?>"<?php endif;?> autocomplete="off" autofocus required />
+                            </div>
+			</div>
+                        
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="dbPort">Port:</label>
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" name="dbPort" <?php if(isset($formData["dbPort"])): ?>value="<?php echo $formData["dbPort"]; ?>"<?php endif;?> autocomplete="off" autofocus required />
                             </div>
 			</div>
                     
@@ -51,7 +60,7 @@
                                 <label for="dbName">Name:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" name="dbName" <?php if(isset($dbName)): ?>value="<?php echo $dbName; ?>"<?php endif;?> autocomplete="off" required />
+                                <input type="text" name="dbName" <?php if(isset($formData["dbName"])): ?>value="<?php echo $formData["dbName"]; ?>"<?php endif;?> autocomplete="off" required />
                             </div>
 			</div>
                     
@@ -60,7 +69,7 @@
                                 <label for="dbUserName">Username:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" name="dbUserName" <?php if(isset($dbUserName)): ?>value="<?php echo $dbUserName; ?>"<?php endif;?> autocomplete="off" required />
+                                <input type="text" name="dbUserName" <?php if(isset($formData["dbUserName"])): ?>value="<?php echo $formData["dbUserName"]; ?>"<?php endif;?> autocomplete="off" required />
                             </div>
 			</div>
                     
@@ -69,7 +78,7 @@
                                 <label for="dbPassword">Password:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="password" name="dbPassword" <?php if(isset($dbPassword)): ?>value="<?php echo $dbPassword; ?>"<?php endif;?> autocomplete="off" required />
+                                <input type="password" name="dbPassword" <?php if(isset($formData["dbPassword"])): ?>value="<?php echo $formData["dbPassword"]; ?>"<?php endif;?> autocomplete="off" />
                             </div>
 			</div>
                         
@@ -88,7 +97,7 @@
                                 <label for="adminName">Username:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="text" name="adminName" <?php if(isset($adminName)): ?>value="<?php echo $adminName; ?>"<?php endif;?> autocomplete="off" required />
+                                <input type="text" name="adminName" <?php if(isset($formData["adminName"])): ?>value="<?php echo $formData["adminName"]; ?>"<?php endif;?> autocomplete="off" required />
                             </div>
 			</div>
                         
@@ -97,16 +106,16 @@
                                 <label for="adminPassword">Password:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="password" name="adminPassword" <?php if(isset($adminPassword)): ?>value="<?php echo $adminPassword; ?>"<?php endif;?> autocomplete="off" required />
+                                <input type="password" name="adminPassword" <?php if(isset($formData["adminPassword"])): ?>value="<?php echo $formData["adminPassword"]; ?>"<?php endif;?> autocomplete="off" required />
                             </div>
 			</div>
                         
-                        <div class="row">
+                        <div class="row<?php echo isset($formErrors['adminPasswordVerify']) ? " error" : "";?>">
                             <div class="col-md-3">
                                 <label for="adminPasswordVerify">Verify Password:</label>
                             </div>
                             <div class="col-md-9">
-                                <input type="password" name="adminPasswordVerify" <?php if(isset($adminPasswordVerify)): ?>value="<?php echo $adminPasswordVerify; ?>"<?php endif;?> autocomplete="off" required />
+                                <input type="password" name="adminPasswordVerify" <?php if(isset($formData["adminPasswordVerify"])): ?>value="<?php echo $formData["adminPasswordVerify"]; ?>"<?php endif;?> autocomplete="off" required />
                             </div>
 			</div>
                     </fieldset>

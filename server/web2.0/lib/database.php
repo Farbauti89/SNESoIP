@@ -5,15 +5,23 @@ namespace lib;
 class Database {
     static private $connections = array();
     
-    static public function getConnection($name='work'){
+    static public function getConnection($name='default'){
         if(!isset(self::$connections[$name])){
-            $prefix = "database.".$name.".";
-            $f3 = \Base::instance();
+            global $f3;
+            $config = new \Doctrine\DBAL\Configuration();
             
-            $dns = sprintf('mysql:host=%s;port=%s;dbname=%s', $f3->get($prefix."host"), $f3->get($prefix."port"), $f3->get($prefix."name"));
-            $db = new \DB\SQL($dns, $f3->get($prefix."user"), $f3->get($prefix."password"));
+            $connectionParams = array(
+                'dbname' => $f3->get("database.name"),
+                'user' => $f3->get("database.user"),
+                'password' => $f3->get("database.password"),
+                'host' => $f3->get("database.host"),
+                'port' => $f3->get("database.port"),
+                'driver' => 'pdo_mysql',
+                'charset' => 'UTF8'
+            );
+            $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
             
-            self::$connections[$name] = $db;
+            self::$connections[$name] = $conn;
         }
         
         return self::$connections[$name];

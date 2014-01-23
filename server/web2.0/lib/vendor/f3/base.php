@@ -1348,7 +1348,7 @@ final class Base {
 	*	@param $lf bool
 	**/
 	function read($file,$lf=FALSE) {
-		$out=file_get_contents($file);
+		$out=@file_get_contents($file);
 		return $lf?preg_replace('/\r\n|\r/',"\n",$out):$out;
 	}
 

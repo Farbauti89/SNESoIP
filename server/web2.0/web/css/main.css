@@ -4,7 +4,7 @@ body {
     background-color: #fff2e7;
 }
 
-p, h1, h2, h3, h4, h5, h6, label{
+p, h1, h2, h3, h4, h5, h6, label, input{
     font-family: 'Orbitron', sans-serif;
     font-weight: 600;
     color:#fff;
@@ -12,6 +12,7 @@ p, h1, h2, h3, h4, h5, h6, label{
 
 input {
     margin-bottom: 10px;
+    color: #000;
 }
 
 input[type="submit"] {
@@ -50,6 +51,15 @@ footer p{
 
 .col-md-12.text-center h2{
     margin-bottom: 40px;
+}
+
+.error label,
+.error input{
+    color: red;
+}
+
+.error input{
+    border: 1px solid red;
 }
 
 @media (min-width: 768px){
