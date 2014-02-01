@@ -12,6 +12,8 @@ namespace actions\install;
 
 class action {
     
+    private $errors = array();
+    
     CONST TEMPLATE_CONFIG = "config.default.cfg";
     CONST CONFIG = "config.cfg";
     
@@ -46,7 +48,7 @@ class action {
         
         $formData = $f3->get("POST");
         $formErrors = $this->validateFormData($formData);
-        $errors = $this->checkDependencies();
+        $this->checkDependencies();
         
         if(count($formErrors) == 0){
             if(!file_exists(self::CONFIG) || is_writable(self::CONFIG)){
@@ -62,27 +64,91 @@ class action {
                 
                 //reload config
                 $f3->config(self::CONFIG);
+                $this->createSchema();
                 
                 
             }else{
-                $errors["Config"] = "Could not write ".self::CONFIG;
+                $this->errors["Config"] = "Could not write ".self::CONFIG;
             }
         }
         
         $f3->set('formData', $formData);
         $f3->set('formErrors', $formErrors);
-        $f3->set('errors', $errors);
+        $f3->set('errors', $this->errors);
         
         echo \View::instance()->render($template);
     }
     
     private function validateFormData($data){
-        $errors = array();
-        
         if($data['adminPassword'] !== $data['adminPasswordVerify']){
-            $errors['adminPasswordVerify'] = "Passwords don't match";
+            $this->errors['adminPasswordVerify'] = "Passwords don't match";
         }
+    }
+    
+    private function createSchema(){
         
-        return $errors;
+        $statements = array();
+        
+        $statements["userTable"] = <<<EOF
+CREATE  TABLE `user` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `username` VARCHAR(255) NOT NULL ,
+  `password_hash` VARCHAR(45) NOT NULL ,
+  `key` VARCHAR(64) NOT NULL ,
+  `isAdmin` TINYINT NULL DEFAULT 0 ,
+  `online` TINYINT NULL ,
+  `create_time` TIMESTAMP NULL DEFAULT NOW() ,
+  `auth_time` TIMESTAMP NULL ,
+  `current_ip` VARCHAR(128) NULL ,
+  `port` INT(10) NOT NULL DEFAULT 0 ,
+  `dest_user_id` INT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) ,
+  INDEX `online` (`online` ASC));
+EOF;
+        
+        $statements["userFK"] = <<<EOF
+ALTER TABLE `user` 
+  ADD CONSTRAINT `FK_USER_USER`
+  FOREIGN KEY (`dest_user_id` )
+  REFERENCES `user` (`id` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `FK_USER_USER_idx` (`dest_user_id` ASC) ;            
+EOF;
+        
+        $statements["profile"] = <<<EOF
+CREATE  TABLE `profile` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `user_id` INT NOT NULL ,
+  `firstname` VARCHAR(255) NULL ,
+  `lastname` VARCHAR(255) NULL ,
+  `avatar` BLOB NULL ,
+  `region` VARCHAR(255) NULL ,
+  `email` VARCHAR(255) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `FK_PROFILE_USER_idx` (`user_id` ASC) ,
+  CONSTRAINT `FK_PROFILE_USER`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `user` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION);            
+EOF;
+        
+        $connection = \lib\Database::getConnection();
+        
+        try{
+            $connection->connect();
+            $connection->beginTransaction();
+            
+            foreach($statements as $statement){
+                $connection->exec($statement);
+            }
+            
+            $connection->commit();
+        } catch (Exception $e){
+            $connection->rollBack();
+            $this->errors['InstallDB'] = $e->getMessage();
+        }
     }
 }
