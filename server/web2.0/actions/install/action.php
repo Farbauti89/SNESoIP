@@ -19,11 +19,11 @@ class action {
     
     public function get($f3){
         if(\services\install::configFileExists()){
-            echo \View::instance()->render("install/alreadyInstalled.html");
+            echo \lib\myView::instance()->render("install/alreadyInstalled.html");
         } else {
             $f3->set('errors', \services\install::checkDependencies());
             $f3->set('formData', array('dbPort' => '3306'));
-            echo \View::instance()->render("install/get.html");
+            echo \lib\myView::instance()->render("install/get.html");
         }
     }
     
@@ -31,7 +31,7 @@ class action {
     
     public function post($f3, $params){
         if(\services\install::configFileExists()){
-            echo \View::instance()->render("install/alreadyInstalled.html");
+            echo \lib\myView::instance()->render("install/alreadyInstalled.html");
         } else {
             $template = "install/get.html";
 
@@ -55,7 +55,7 @@ class action {
             $f3->set('formErrors', $formErrors);
             $f3->set('errors', $this->errors);
 
-            echo \View::instance()->render($template);
+            echo \lib\myView::instance()->render($template);
         }
     }
 }
