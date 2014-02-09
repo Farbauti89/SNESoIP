@@ -26,20 +26,6 @@
                         <p>you can now login <a href="index.php" title="Homepage">here</a></p>
                     </div>
                 </div>
-
-                <?php if(!$configFileWriteable):?>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2>Warning</h2>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-warning">The configuration file could not be written automatically! <br/>
-                            Please create a file called 'configuration.php' with the following content:</p>
-                        <textarea id="configcontent">bla...</textarea>
-                        <p class="text-warning">Delete the 'configuration.php' file if you want to run the installation again!</p>
-                    </div>
-                </div>
-                <?php endif; ?>
             </div>
             
             <footer class="text-center">

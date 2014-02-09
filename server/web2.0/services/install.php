@@ -155,4 +155,13 @@ EOF;
         $entityManager->flush();
     }
     
+    /**
+     * This function checks if the configfile exists
+     * @return boolean
+     */
+    static function configFileExists(){
+        $fileName = \actions\install\action::CONFIG;
+        return file_exists($fileName);
+    }
+    
 }
