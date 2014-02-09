@@ -2,9 +2,11 @@
 
 body {
     background-color: #fff2e7;
+    color: #d0cabf;
+    font-size: 25px;
 }
 
-p, h1, h2, h3, h4, h5, h6, label, input{
+h1, h2, h3, h4, h5, h6{
     font-family: 'Orbitron', sans-serif;
     font-weight: 600;
     color:#fff;
@@ -12,11 +14,14 @@ p, h1, h2, h3, h4, h5, h6, label, input{
 
 input {
     margin-bottom: 10px;
-    color: #000;
+    background-color: #fff2e7;
+    color: #4b4d52;
+    outline-color: grey;;
 }
 
 input[type="submit"] {
     width: 100%;
+    font-size: 25px;
 }
 
 fieldset{
@@ -60,6 +65,10 @@ footer p{
 
 .error input{
     border: 1px solid red;
+}
+
+footer p{
+    font-size: 14px;
 }
 
 @media (min-width: 768px){
