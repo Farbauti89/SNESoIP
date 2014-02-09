@@ -28,37 +28,37 @@ class user {
     private $username;
     
     /**
-     * @Column(type="string", length=255, unique="true")
+     * @Column(name="password_hash", type="string", length=255, unique=true)
      * @var string
      */
-    private $password;
+    private $passwordHash;
     
     /**
-     * @Column(type="datetime", name="created_time", nullable=true)
+     * @Column(type="datetime", name="create_time", nullable=true)
      * @var DateTime 
      */
     private $createTime;
     
     /**
-     * @Column(type=boolean, name="admin", nullable=true)
+     * @Column(type="boolean", name="is_admin", nullable=true)
      * @var boolean 
      */
     private $isAdmin;
     
     /**
-     * @Column(type="string", length=128)
+     * @Column(name="current_ip", type="string", length=128)
      * @var string
      */
     private $currentIp;
     
     /**
-     * @Column(type="integer", length=10, options={unsigned=true, default="0"})
+     * @Column(name="`port`", type="integer", length=10, options={"unsigned"=true, "default"="0"})
      * @var integer 
      */
     private $port;
     
     /**
-     * @Column(type="boolean", options={default="0"})
+     * @Column(type="boolean", options={"default"="0"})
      * @var boolean 
      */
     private $online;
@@ -76,13 +76,12 @@ class user {
     private $destUser;
     
     /**
-     * @OneToOne(targetEntity="Profile")
-     * @JoinColumn(name="id", referencedColumnName="user_id") 
+     *  @OneToOne(targetEntity="profile", mappedBy="user", cascade="persist")
      */
     private $profile;
     
     /**
-     * @Column(type="string", length=64)
+     * @Column(name="`key`", type="string", length=64)
      * @var string
      */
     private $key;
@@ -95,8 +94,8 @@ class user {
         return $this->username;
     }
 
-    public function getPassword() {
-        return $this->password;
+    public function getPasswordHash() {
+        return $this->passwordHash;
     }
 
     public function getCreateTime() {
@@ -127,6 +126,10 @@ class user {
         return $this->destUser;
     }
 
+    public function getProfile() {
+        return $this->profile;
+    }
+
     public function getKey() {
         return $this->key;
     }
@@ -141,8 +144,8 @@ class user {
         return $this;
     }
 
-    public function setPassword($password) {
-        $this->password = $password;
+    public function setPasswordHash($passwordHash) {
+        $this->passwordHash = $passwordHash;
         return $this;
     }
 
@@ -181,20 +184,15 @@ class user {
         return $this;
     }
 
-    public function setKey($key) {
-        $this->key = $key;
-        return $this;
-    }
-
-    public function getProfile() {
-        return $this->profile;
-    }
-
     public function setProfile($profile) {
         $this->profile = $profile;
         return $this;
     }
 
+    public function setKey($key) {
+        $this->key = $key;
+        return $this;
+    }
 
-            
+
 }

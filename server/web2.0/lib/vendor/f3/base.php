@@ -1404,7 +1404,7 @@ final class Base {
 	*	@return mixed
 	*	@param $class string
 	**/
-	protected function autoload($class) {
+	public function autoload($class) {
 		$class=$this->fixslashes(ltrim($class,'\\'));
 		foreach ($this->split($this->hive['PLUGINS'].';'.
 			$this->hive['AUTOLOAD']) as $auto)

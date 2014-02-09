@@ -11,10 +11,8 @@
 namespace models;
 
 /**
- * Description of profile
- *
- * @author jan
- */
+ * @Entity @Table(name="profile")
+ **/
 class profile {
     
     /**
@@ -52,6 +50,12 @@ class profile {
      * @var string
      */
     private $email;
+    
+    /**
+     * @OneToOne(targetEntity="user", inversedBy="profile", cascade="persist")
+     * @JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
     
     public function getId() {
         return $this->id;
@@ -104,6 +108,15 @@ class profile {
 
     public function setEmail($email) {
         $this->email = $email;
+        return $this;
+    }
+    
+    public function getUser(){
+        return $this->user;
+    }
+    
+    public function setUser(User $user){
+        $this->user = $user;
         return $this;
     }
 

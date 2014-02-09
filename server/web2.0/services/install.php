@@ -45,13 +45,13 @@ CREATE  TABLE `user` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `username` VARCHAR(255) NOT NULL ,
   `password_hash` VARCHAR(45) NOT NULL ,
-  `key` VARCHAR(64) NOT NULL ,
-  `isAdmin` TINYINT NULL DEFAULT 0 ,
+  `key` VARCHAR(64) ,
+  `is_admin` TINYINT NULL DEFAULT 0 ,
   `online` TINYINT NULL ,
   `create_time` TIMESTAMP NULL DEFAULT NOW() ,
   `auth_time` TIMESTAMP NULL ,
   `current_ip` VARCHAR(128) NULL ,
-  `port` INT(10) NOT NULL DEFAULT 0 ,
+  `port` INT(10) DEFAULT 0 ,
   `dest_user_id` INT NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) ,
@@ -134,12 +134,25 @@ EOF;
             $newConfig = str_replace("[database.password]", $formData["dbPassword"], $newConfig);
 
             $f3->write($fileName, $newConfig);
-
-            //reload config
-            $f3->config(self::CONFIG);
-            \services\install::createSchema();
+            
+            return true;
         }
         
+        return false;
+        
+    }
+    
+    static public function createAdmin($formData){
+        $entityManager = \lib\Database::getEntityManager();
+        
+        $user = new \models\user();
+        
+        $user->setUsername($formData['adminName']);
+        $user->setPasswordHash(md5($formData['adminPassword']));
+        $user->setIsAdmin(true);
+        
+        $entityManager->persist($user);
+        $entityManager->flush();
     }
     
 }

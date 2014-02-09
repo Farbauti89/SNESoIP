@@ -18,7 +18,7 @@ class action {
     CONST CONFIG = "config.cfg";
     
     public function get($f3){
-        $f3->set('errors', $this->checkDependencies());
+        $f3->set('errors', \services\install::checkDependencies());
         $f3->set('formData', array('dbPort' => '3306'));
         echo \View::instance()->render("install/get.html");
     }
@@ -36,7 +36,9 @@ class action {
             if(\services\install::writeConfig($formData)){
                 //reload config
                 $f3->config(self::CONFIG);
-                \services\install::createSchema();
+                //\services\install::createSchema();
+                
+                \services\install::createAdmin($formData);
             }else{
                 $this->errors["Config"] = "Could not write ".self::CONFIG;
             }
