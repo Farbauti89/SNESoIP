@@ -36,7 +36,7 @@ class action {
             if(\services\install::writeConfig($formData)){
                 //reload config
                 $f3->config(self::CONFIG);
-                //\services\install::createSchema();
+                \services\install::createSchema();
                 
                 \services\install::createAdmin($formData);
             }else{
