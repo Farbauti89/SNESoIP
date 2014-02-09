@@ -23,6 +23,7 @@ $f3->set("UI", "views/");
 \lib\Database::getConnection();
 
 $f3->map('/install', 'actions\install\action');
+$f3->map('/', 'actions\index\action');
 
 $f3->run();
 
